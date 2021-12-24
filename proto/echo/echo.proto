@@ -1,0 +1,20 @@
+ syntax = "proto3";
+
+ package grpc.examples.echo;
+
+ // EchoRequest is the request for echo.
+ message EchoRequest {
+   string message = 1;
+ }
+
+ // EchoResponse is the response for echo.
+ message EchoResponse {
+   string message = 1;
+ }
+
+ // Echo is the echo service.
+ service Echo {
+
+   // ServerStreamingEcho is server side streaming.
+   rpc ServerStreamingEcho(EchoRequest) returns (stream EchoResponse) {}
+ }

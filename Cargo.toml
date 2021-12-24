@@ -1,0 +1,31 @@
+[package]
+name = "grpc"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "helloworld-server"
+path = "src/helloworld/server.rs"
+
+[[bin]]
+name = "helloworld-client"
+path = "src/helloworld/client.rs"
+
+[[bin]]
+name = "streaming-client"
+path = "src/streaming/client.rs"
+
+[[bin]]
+name = "streaming-server"
+path = "src/streaming/server.rs"
+
+[dependencies]
+async-stream = "0.3"
+tokio = {version = "1.0", features = ["rt-multi-thread", "time", "fs", "macros", "net"]}
+futures = {version = "0.3", default-features = false, features = ["alloc"]}
+prost = "0.9"
+tonic = {version = "0.6.2", features = ["tls", "compression"]}
+tokio-stream = {version = "0.1", features = ["net"]}
+
+[build-dependencies]
+tonic-build = {version = "0.6.2", features = ["prost", "compression"]}
