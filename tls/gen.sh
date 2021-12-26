@@ -9,12 +9,18 @@
 # server.crt: Server certificate signed by the CA (this would be sent back by the CA owner) - keep on server
 # server.pem: Conversion of server.key into a format gRPC likes (this shouldn't be shared)
 
+# client.key: client private key, password protected (this shouldn't be shared)
+# client.csr: client certificate signing request (this should be shared with the CA owner)
+# client.crt: client certificate signed by the CA (this would be sent back by the CA owner) - keep on client
+# client.pem: Conversion of client.key into a format gRPC likes (this shouldn't be shared)
+
 # Summary 
-# Private files: ca.key, server.key, server.pem, server.crt
+# Private files: ca.key, server.key, server.pem, server.crt - client.key, client.pem, client.crt
 # "Share" files: ca.crt (needed by the client), server.csr (needed by the CA)
 
 # Changes these CN's to match your hosts in your environment if needed.
 SERVER_CN=localhost
+CLIENT_CN=localhost
 
 # Step 1: Generate Certificate Authority + Trust Certificate (ca.crt)
 openssl genrsa -passout pass:1111 -des3 -out ca.key 4096
@@ -31,3 +37,17 @@ openssl x509 -req -passin pass:1111 -days 3650 -in server.csr -CA ca.crt -CAkey 
 
 # Step 5: Convert the server certificate to .pem format (server.pem) - usable by gRPC
 openssl pkcs8 -topk8 -nocrypt -passin pass:1111 -in server.key -out server.pem
+
+
+# Client side.
+# Step 6: Generate the Client Private Key (client.key)
+openssl genrsa -passout pass:1111 -des3 -out client.key 4096
+
+# Step 7: Get a certificate signing request from the CA (client.csr)
+openssl req -passin pass:1111 -new -key client.key -out client.csr -subj "/CN=${CLIENT_CN}" -config ssl.cnf
+
+# Step 8: Sign the certificate with the CA we created (it's called self signing) - client.crt
+openssl x509 -req -passin pass:1111 -days 3650 -in client.csr -CA ca.crt -CAkey ca.key -set_serial 01 -out client.crt -extensions req_ext -extfile ssl.cnf
+
+# Step 9: Convert the client certificate to .pem format (client.pem) - usable by gRPC
+openssl pkcs8 -topk8 -nocrypt -passin pass:1111 -in client.key -out client.pem

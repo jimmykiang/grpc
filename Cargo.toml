@@ -12,12 +12,20 @@ name = "helloworld-client"
 path = "src/helloworld/client.rs"
 
 [[bin]]
-name = "streaming-client"
-path = "src/streaming/client.rs"
+name = "serverside-tls-client"
+path = "src/serverSideTLS/client.rs"
 
 [[bin]]
-name = "streaming-server"
-path = "src/streaming/server.rs"
+name = "serverside-tls-server"
+path = "src/serverSideTLS/server.rs"
+
+[[bin]]
+name = "mutual-tls-client"
+path = "src/mutual-tls/client.rs"
+
+[[bin]]
+name = "mutual-tls-server"
+path = "src/mutual-tls/server.rs"
 
 [dependencies]
 async-stream = "0.3"
